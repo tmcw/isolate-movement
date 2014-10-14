@@ -52,12 +52,10 @@ function median(datas) {
 function subtract(a, b) {
   var out = scCtx.createImageData(352, 240);
   for (var i = 0; i < a.data.length; i += 4) {
-    if (Math.abs(a.data[i + 0] - b.data[i + 0]) > 20) {
-      out.data[i + 0] = a.data[i + 0];
-      out.data[i + 1] = a.data[i + 1];
-      out.data[i + 2] = a.data[i + 2];
-      out.data[i + 3] = a.data[i + 3];
-    } else { }
+    out.data[i + 0] = a.data[i + 0] - b.data[i + 0];
+    out.data[i + 1] = a.data[i + 1] - b.data[i + 1];
+    out.data[i + 2] = a.data[i + 2] - b.data[i + 2];
+    out.data[i + 3] = a.data[i + 3];
   }
   return out;
 }
