@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>isolate-movement</title>
+<style>
+body {
+  margin:0;
+  font-family:sans-serif;
+  padding:0;
+}
+canvas {
+  width:100%;
+}
+</style>
+</head>
+<body>
+<script src='./images.js'></script>
+<script>
+var toLoad = images.slice(0, 3);
+var datas = [];
+function loadImage() {
+  var image = 'data/' + toLoad.pop();
+  var im = new Image();
+  im.onload = function() {
+    scCtx.drawImage(im, 0, 0);
+    datas.push(scCtx.getImageData(0, 0, 352, 240));
+    if (toLoad.length) loadImage();
+    else complete(datas);
+  };
+  im.src = image;
+}
+
+var sc = document.createElement('canvas');
+sc.width = 352;
+sc.height = 240;
+var scCtx = sc.getContext('2d');
+
+function median(datas) {
+  var out = scCtx.createImageData(352, 240);
+  for (var i = 0; i < out.data.length; i++) {
+    var values = [];
+    for (var j = 0; j < datas.length; j++) {
+      values.push(datas[j].data[i]);
+    }
+    values.sort(sortNumeric);
+    out.data[i] = values[Math.floor(values.length/2)];
+  }
+  return out;
+}
+
+function min(datas) {
+  var out = scCtx.createImageData(352, 240);
+  for (var i = 0; i < out.data.length; i++) {
+    var values = [];
+    for (var j = 0; j < datas.length; j++) {
+      values.push(datas[j].data[i]);
+    }
+    values.sort(sortNumeric);
+    out.data[i] = values[0];
+  }
+  return out;
+}
+
+function max(datas) {
+  var out = scCtx.createImageData(352, 240);
+  for (var i = 0; i < out.data.length; i++) {
+    var values = [];
+    for (var j = 0; j < datas.length; j++) {
+      values.push(datas[j].data[i]);
+    }
+    values.sort(sortNumeric);
+    out.data[i] = values[values.length - 1];
+  }
+  return out;
+}
+
+function mean(datas) {
+  var out = scCtx.createImageData(352, 240);
+  for (var i = 0; i < out.data.length; i++) {
+    var values = [];
+    for (var j = 0; j < datas.length; j++) {
+      values.push(datas[j].data[i]);
+    }
+    var sum = 0;
+    for (var k = 0; k < values.length; k++) sum += values[k];
+    out.data[i] = sum / values.length;
+  }
+  return out;
+}
+
+function sortNumeric(a, b) { return a - b; }
+
+loadImage();
+
+function complete(datas) {
+  var can = document.body.appendChild(document.createElement('canvas'));
+  can.width = 352;
+  can.height = 240;
+  var ctx = can.getContext('2d');
+  if (location.hash.match(/median/)) {
+    ctx.putImageData(median(datas), 0, 0);
+  }
+  if (location.hash.match(/mean/)) {
+    ctx.putImageData(mean(datas), 0, 0);
+  }
+  if (location.hash.match(/max/)) {
+    ctx.putImageData(max(datas), 0, 0);
+  }
+  if (location.hash.match(/min/)) {
+    ctx.putImageData(min(datas), 0, 0);
+  }
+}
+</script>
+</body>
+</html>
