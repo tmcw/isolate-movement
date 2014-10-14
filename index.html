@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title></title>
+<style>
+body {
+  margin:0;
+  font-family:sans-serif;
+  padding:0;
+}
+#screen {
+  width:100%;
+}
+#controls {
+  padding:10px;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+<div id='controls'>
+  <label for='fps'>fps</label>
+  <input id='fps' type='range' min=10 max=1000 default=50 />
+  <label for='win'>window</label>
+  <input id='win' type='range' min=5 max=20 default=50 />
+  <label for='threshold'>threshold</label>
+  <input id='threshold' type='range' min=0 max=40 default=50 />
+  <label for='bw'>b/w</label>
+  <input id='bw' type='checkbox' />
+  <a href='http://github.com/tmcw/isolate-movement'>git://</a>
+</div>
+<canvas width=352 height=240 id='screen'></canvas>
+<script src='./simple_statistics.js'></script>
+<script src='./images.js'></script>
+<script src='./index.js'></script>
+</body>
+</html>
