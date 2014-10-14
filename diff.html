@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>isolate-movement</title>
+<style>
+body {
+  margin:0;
+  font-family:sans-serif;
+  padding:0;
+}
+canvas {
+  width:100%;
+}
+</style>
+</head>
+<body>
+<script src='./images.js'></script>
+<script>
+var toLoad = images.slice(0, 3);
+var datas = [];
+function loadImage() {
+  var image = 'data/' + toLoad.pop();
+  var im = new Image();
+  im.onload = function() {
+    scCtx.drawImage(im, 0, 0);
+    datas.push(scCtx.getImageData(0, 0, 352, 240));
+    if (toLoad.length) loadImage();
+    else complete(datas);
+  };
+  im.src = image;
+}
+
+var sc = document.createElement('canvas');
+sc.width = 352;
+sc.height = 240;
+var scCtx = sc.getContext('2d');
+
+function median(datas) {
+  var out = scCtx.createImageData(352, 240);
+  for (var i = 0; i < out.data.length; i++) {
+    var values = [];
+    for (var j = 0; j < datas.length; j++) {
+      values.push(datas[j].data[i]);
+    }
+    values.sort(sortNumeric);
+    out.data[i] = values[Math.floor(values.length/2)];
+  }
+  return out;
+}
+
+function subtract(a, b) {
+  var out = scCtx.createImageData(352, 240);
+  for (var i = 0; i < a.data.length; i += 4) {
+    if (Math.abs(a.data[i + 0] - b.data[i + 0]) > 20) {
+      out.data[i + 0] = a.data[i + 0];
+      out.data[i + 1] = a.data[i + 1];
+      out.data[i + 2] = a.data[i + 2];
+      out.data[i + 3] = a.data[i + 3];
+    } else { }
+  }
+  return out;
+}
+
+function sortNumeric(a, b) { return a - b; }
+
+loadImage();
+
+function complete(datas) {
+  var can = document.body.appendChild(document.createElement('canvas'));
+  can.width = 352;
+  can.height = 240;
+  var ctx = can.getContext('2d');
+  var med = median(datas);
+
+  var j = 0;
+  var pause = false;
+  tick();
+
+  document.body.onclick = function() {
+    pause = !pause;
+  };
+  ctx.putImageData(subtract(med, datas[j]), 0, 0);
+
+  function tick() {
+    if (!pause) {
+      if (++j >= datas.length) j = 0;
+      ctx.putImageData(subtract(med, datas[j]), 0, 0);
+    }
+    setTimeout(tick, 500);
+  }
+}
+</script>
+</body>
+</html>
