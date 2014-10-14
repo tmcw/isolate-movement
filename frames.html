@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>isolate-movement</title>
+<style>
+body {
+  margin:0;
+  font-family:sans-serif;
+  padding:0;
+}
+img {
+  width:33.3%;
+}
+</style>
+</head>
+<body>
+<script src='./images.js'></script>
+<script>
+images.slice(0, 3).forEach(function(im) {
+  var elem = document.body.appendChild(document.createElement('img'));
+  elem.src = 'data/' + im;
+});
+</script>
+</body>
+</html>

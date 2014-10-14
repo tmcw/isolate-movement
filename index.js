@@ -46,9 +46,11 @@ function isolate() {
     refs.push(ref);
   }
   console.timeEnd('isolate');
+  console.time('subtract');
   for (var i = 0; i < datas.length; i++) {
     output.push(subtract(datas[i], refs[Math.floor(i / win)]));
   }
+  console.timeEnd('subtract');
   return output;
 }
 
@@ -79,11 +81,13 @@ function median(datas) {
     for (var j = 0; j < datas.length; j++) {
       values.push(datas[j].data[i]);
     }
-    values.sort(function(a, b) { return a - b; });
+    values.sort(sortNumeric);
     out.data[i] = values[Math.floor(values.length/2)];
   }
   return out;
 }
+
+function sortNumeric(a, b) { return a - b; }
 
 document.getElementById('fps').onchange = function(e) {
   fps = parseFloat(e.target.value);
